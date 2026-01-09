@@ -1540,8 +1540,80 @@ State: "Current phase is {X}. Milestone has {N} phases (highest: {Y})."
 
 **Route B: Phase complete, more phases remain in milestone**
 
-Read ROADMAP.md to get the next phase's name and goal.
+Read ROADMAP.md to get the next phase's:
+- Name and goal
+- **Research** field value (look for "Likely" vs "Unlikely")
+- **Research topics** field (if Research is "Likely")
 
+Check if research already exists for the next phase:
+```bash
+ls .planning/phases/${NEXT_PHASE}-*/${NEXT_PHASE}-RESEARCH.md 2>/dev/null
+```
+
+<if research="Likely" AND research_file_missing>
+```
+Plan {phase}-{plan} complete.
+Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
+
+## ✓ Phase {Z}: {Phase Name} Complete
+
+All {Y} plans finished.
+
+---
+
+## ▶ Next Up
+
+**Phase {Z+1}: {Next Phase Name}** — {Goal from ROADMAP.md}
+
+🔬 **Research recommended** — {Research topics from ROADMAP.md}
+
+`/gsd:research-phase {Z+1}`
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:verify-work {Z}` — manual acceptance testing before continuing
+- `/gsd:plan-phase {Z+1}` — skip research and plan directly
+- `/gsd:discuss-phase {Z+1}` — gather context first
+
+---
+```
+</if>
+
+<if research="Likely" AND research_file_exists>
+```
+Plan {phase}-{plan} complete.
+Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
+
+## ✓ Phase {Z}: {Phase Name} Complete
+
+All {Y} plans finished.
+
+---
+
+## ▶ Next Up
+
+**Phase {Z+1}: {Next Phase Name}** — {Goal from ROADMAP.md}
+
+✓ Research already complete: {path to RESEARCH.md}
+
+`/gsd:plan-phase {Z+1}`
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:verify-work {Z}` — manual acceptance testing before continuing
+- `/gsd:discuss-phase {Z+1}` — gather context first
+
+---
+```
+</if>
+
+<if research="Unlikely">
 ```
 Plan {phase}-{plan} complete.
 Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
@@ -1565,11 +1637,10 @@ All {Y} plans finished.
 **Also available:**
 - `/gsd:verify-work {Z}` — manual acceptance testing before continuing
 - `/gsd:discuss-phase {Z+1}` — gather context first
-- `/gsd:research-phase {Z+1}` — investigate unknowns
-- Review phase accomplishments before continuing
 
 ---
 ```
+</if>
 
 ---
 
